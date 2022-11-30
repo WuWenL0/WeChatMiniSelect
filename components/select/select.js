@@ -7,8 +7,8 @@ Component({
     defaultOption: {
       type: Object,
       value: {
-        id: '000',
-        name: '全部城市'
+        id: 0,
+        name: '请选择'
       }
     },
     key: {
@@ -41,16 +41,7 @@ Component({
         isShow: !this.data.isShow
       })
     },
-
-    // 此方法供父组件调用
-    close() {
-      this.setData({
-        isShow: false
-      })
-    }
-  },
-  lifetimes: {
-    attached() {
+    transferResult(){
       // 属性名称转换, 如果不是 { id: '', name:'' } 格式，则转为 { id: '', name:'' } 格式
       let result = []
       if (this.data.key !== 'id' || this.data.text !== 'name') {       
@@ -60,9 +51,32 @@ Component({
         }
       }
       this.setData({
-        current: Object.assign({}, this.data.defaultOption),
         result: result
       })
+    },
+    // 此方法供父组件调用
+    close() {
+      this.setData({
+        isShow: false
+      })
+    },
+    reset() {
+      this.setData({
+        current: Object.assign({}, this.data.defaultOption),
+      })
+    }
+  },
+  observers:{
+    'options':function(value){
+      this.transferResult()
+    }
+  },
+  lifetimes: {
+    attached() {
+      this.setData({
+        current: Object.assign({}, this.data.defaultOption),
+      })
+      this.transferResult()
     }
   }
 })
